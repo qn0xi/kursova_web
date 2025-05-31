@@ -1,0 +1,106 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="page-title">Розклад сеансів</h1>
+
+<label for="schedule-date" class="schedule-date-label">Оберіть дату:</label>
+<input type="date" id="schedule-date" class="schedule-date-input">
+
+<div id="schedules-container" class="schedule-container">
+    <!-- Schedules will be loaded here by JavaScript -->
+</div>
+
+<script>
+    const dateInput = document.getElementById('schedule-date');
+    const schedulesContainer = document.getElementById('schedules-container');
+
+    // Set the minimum date to today to disable past dates
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+    dateInput.setAttribute('min', todayString);
+
+    dateInput.addEventListener('change', function() {
+        const selectedDate = this.value;
+        if (selectedDate) {
+            fetch(`/schedule/by-date/?date=${selectedDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    schedulesContainer.innerHTML = ''; // Clear previous schedules
+                    if (data.schedules && data.schedules.length > 0) {
+                        // Group schedules by movie title (assuming movie_title, poster_url, age_rating, format, percentage_category are consistent for a movie)
+                        const schedulesByMovie = data.schedules.reduce((acc, schedule) => {
+                            if (!acc[schedule.movie_title]) {
+                                acc[schedule.movie_title] = {
+                                    poster_url: schedule.poster_url,
+                                    age_rating: schedule.age_rating,
+                                    format: schedule.format,
+                                    percentage_category: schedule.percentage_category,
+                                    sessions: []
+                                };
+                            }
+                            acc[schedule.movie_title].sessions.push({
+                                time: schedule.time,
+                                hall: schedule.hall,
+                                price: schedule.price,
+                                id: schedule.id // Assuming session ID is available
+                            });
+                            return acc;
+                        }, {});
+
+                        // Iterate through grouped schedules and create movie cards
+                        for (const movieTitle in schedulesByMovie) {
+                            const movieData = schedulesByMovie[movieTitle];
+                            const movieCard = document.createElement('div');
+                            movieCard.classList.add('movie-card_schedule');
+
+                            let sessionsHtml = '';
+                            movieData.sessions.forEach(session => {
+                                sessionsHtml += `
+                                    <a href="/payment/${session.id}/" class="session-button_schedule">
+                                        <div class="session-time_schedule">${session.time}</div>
+                                        <div class="session-hall_schedule">Зал №${session.hall}</div>
+                                    </a>
+                                `;
+                            });
+
+                            movieCard.innerHTML = `
+                                <div class="movie-poster_schedule">
+                                    <img src="${movieData.poster_url}" alt="Movie Poster">
+                                </div>
+                                <div class="movie-details_schedule">
+                                    <h3 class="movie-title_schedule">${movieTitle}</h3>
+                                    <div class="movie-meta_schedule">
+                                        ${movieData.age_rating ? `<span class="meta-tag_schedule age-rating_schedule">${movieData.age_rating}+</span>` : ''}
+                                        ${movieData.format ? `<span class="meta-tag_schedule format_schedule">${movieData.format}</span>` : ''}
+                                        ${movieData.percentage_category ? `<span class="meta-tag_schedule percentage-category_schedule">${movieData.percentage_category}%</span>` : ''}
+                                    </div>
+                                    <p class="sessions-title_schedule">Сеанси:</p>
+                                    <div class="sessions_schedule">
+                                        ${sessionsHtml}
+                                    </div>
+                                </div>
+                            `;
+
+                            schedulesContainer.appendChild(movieCard);
+                        }
+
+                    } else {
+                        schedulesContainer.innerHTML = '<p>На цю дату розкладів немає.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching schedules:', error);
+                    schedulesContainer.innerHTML = '<p>Помилка завантаження розкладу.</p>';
+                });
+        }
+    });
+
+    // Optional: Load schedules for today when the page loads
+    dateInput.value = todayString;
+    dateInput.dispatchEvent(new Event('change')); // Trigger the change event to load today's schedule
+
+</script>
+
+
+{% endblock %}

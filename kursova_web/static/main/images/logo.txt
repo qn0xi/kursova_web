@@ -1,0 +1,17 @@
+<svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Кільце -->
+  <ellipse cx="70" cy="85" rx="48" ry="16" fill="none" stroke="#ec4899" stroke-width="4"/>
+  <!-- Планета -->
+  <circle cx="70" cy="70" r="32" fill="#8a5cf6" stroke="#fff" stroke-width="4"/>
+  <!-- Блік -->
+  <ellipse cx="85" cy="60" rx="10" ry="4" fill="#fff" fill-opacity="0.5"/>
+  <!-- Зірки -->
+  <circle cx="40" cy="40" r="2" fill="#fff"/>
+  <circle cx="110" cy="50" r="1.5" fill="#fff"/>
+  <circle cx="60" cy="30" r="1.2" fill="#fff"/>
+  <!-- Кіноплівка -->
+  <rect x="55" y="100" width="30" height="8" rx="2" fill="#181B22" stroke="#03A9F4" stroke-width="2"/>
+  <rect x="60" y="102" width="4" height="4" rx="1" fill="#03A9F4"/>
+  <rect x="68" y="102" width="4" height="4" rx="1" fill="#03A9F4"/>
+  <rect x="76" y="102" width="4" height="4" rx="1" fill="#03A9F4"/>
+</svg>

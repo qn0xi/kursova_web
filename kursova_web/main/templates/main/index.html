@@ -1,0 +1,57 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="banner">
+        <img src="{% static 'main/images/123.webp' %}" alt="Космічний фон" class="banner-image">
+        <h1>Ваш портал у світ кіно</h1>
+    </div>
+
+    <h2 class="section-title">Зараз у прокаті</h2>
+    <div class="movies-container">
+        {% for movie in now_showing_movies %}
+        <div class="movie-card">
+            <div class="movie-poster">
+                {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" alt="Постер фільму: {{ movie.title }}" width="100%" height="100%">
+                {% else %}
+                    <img src="{% static 'main/images/default_poster.jpg' %}" alt="Постер відсутній" width="100%" height="100%">
+                {% endif %}
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                {% if movie.genres %}
+                    <p class="movie-genres">{{ movie.genres }}</p>
+                {% endif %}
+                <a href="{% url 'schedule' %}?movie_id={{ movie.id }}" class="buy-button">Купити квиток</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>Наразі фільмів у прокаті немає.</p>
+        {% endfor %}
+    </div>
+
+    <h2 class="section-title">Скоро у прокаті</h2>
+    <div class="movies-container">
+        {% for movie in coming_soon_movies %}
+        <div class="movie-card">
+            <div class="movie-poster">
+                 {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" alt="Постер фільму: {{ movie.title }}" width="100%" height="100%">
+                {% else %}
+                    <img src="{% static 'main/images/default_poster.jpg' %}" alt="Постер відсутній" width="100%" height="100%">
+                {% endif %}
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }}</h3>
+                {% if movie.genres %}
+                    <p class="movie-genres">{{ movie.genres }}</p>
+                {% endif %}
+                <a href="#" class="buy-button">Скоро</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>Незабаром нових фільмів не очікується.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

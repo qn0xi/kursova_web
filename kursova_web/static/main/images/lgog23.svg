@@ -1,0 +1,13 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Центральне ядро -->
+  <circle cx="60" cy="60" r="14" fill="#fff" fill-opacity="0.9"/>
+  <!-- Перша спіраль -->
+  <path d="M60 60 Q80 50 90 70 Q100 90 70 100 Q40 110 30 80 Q20 50 50 40 Q80 30 90 60" stroke="#8a5cf6" stroke-width="4" fill="none"/>
+  <!-- Друга спіраль -->
+  <path d="M60 60 Q75 65 80 80 Q85 95 65 95 Q45 95 40 75 Q35 55 55 50 Q75 45 80 65" stroke="#ec4899" stroke-width="3" fill="none"/>
+  <!-- Зірки -->
+  <circle cx="40" cy="40" r="2" fill="#fff" fill-opacity="0.7"/>
+  <circle cx="100" cy="50" r="1.5" fill="#fff" fill-opacity="0.7"/>
+  <circle cx="80" cy="100" r="1.2" fill="#fff" fill-opacity="0.7"/>
+  <circle cx="30" cy="90" r="1.5" fill="#fff" fill-opacity="0.7"/>
+</svg>

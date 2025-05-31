@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галактика - Космічний кінотеатр</title>
+    <link rel="stylesheet" href="{% static 'main/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<!-- Хедер -->
+    <header>
+        <div class="header-container">
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static 'main/images/galactic-removebg-preview.png' %}" alt="Галактика" class="logo-image">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#">Фільми</a></li>
+                <li><a href="{% url 'schedule' %}">Розклад</a></li>
+            </ul>
+            <div class="header-right">
+                <div class="auth-buttons">
+                    <a href="#" class="login-button">Вхід</a>
+                    <a href="#" class="register-button">Реєстрація</a>
+                </div>
+                <div class="dropdown-menu">
+                    <button class="menu-button">
+                        <span class="menu-icon"></span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'home' %}">Головна</a>
+                        <a href="#">Фільмы</a>
+                        <a href="{% url 'schedule' %}">Розклад</a>
+                        <a href="#">Про нас</a>
+                        <a href="#">Ціни</a>
+                        <a href="#">Зворотній зв'язок</a>
+                        <a href="#">Контакти</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Головний контент -->
+    <main>
+        {% block content %}{% endblock %}
+    
+    </main>
+
+    <!-- Футер -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Навігація</h3>
+                <ul>
+                    <li><a href="{% url 'home' %}">Головна</a></li>
+                    <li><a href="#">Фільми</a></li>
+                    <li><a href="{% url 'schedule' %}">Розклад</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Про нас</h3>
+                <ul>
+                    <li><a href="#">Про нас</a></li>
+                    <li><a href="#">Ціни</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Контакти</h3>
+                <ul>
+                    <li><a href="#">Зворотній зв'язок</a></li>
+                    <li><a href="#">Контакти</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Слідкуйте за нами</h3>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://web.telegram.org/" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                    <a href="https://www.youtube.com/watch?v=xvFZjo5PgG0" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="copyright">
+            <p>© 2025 Кінотеатр "Галактика". Всі права захищені.</p>
+        </div>
+    </footer>
+    <script src="{% static 'main/script.js' %}"></script>
+</body>
+</html>
