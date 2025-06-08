@@ -57,7 +57,7 @@
                             let sessionsHtml = '';
                             movieData.sessions.forEach(session => {
                                 sessionsHtml += `
-                                    <a href="/payment/${session.id}/" class="session-button_schedule">
+                                    <a href="/schedule/${session.id}/select_seats/" class="session-button_schedule">
                                         <div class="session-time_schedule">${session.time}</div>
                                         <div class="session-hall_schedule">Зал №${session.hall}</div>
                                     </a>

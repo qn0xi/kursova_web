@@ -1,0 +1,158 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}{{ movie.title }} - Оберіть місця{% endblock %}
+
+{% block content %}
+<section class="seat-selection-section">
+    <div class="movie-info-header">
+        <div class="movie-poster-seats">
+            <img src="{{ movie.poster.url }}" alt="{{ movie.title }} Постер">
+        </div>
+        <div class="movie-details-seats">
+            <div class="title-and-meta">
+                <h1>{{ movie.title }}</h1>
+                <div class="movie-meta-seats">
+                    {% if movie.format %}<span class="meta-tag-seats format-seats">{{ movie.format }}</span>{% endif %}
+                    {% if movie.age_rating %}<span class="meta-tag-seats age-rating-seats">{{ movie.age_rating }}+</span>{% endif %}
+                </div>
+            </div>
+            <p><strong>Жанр:</strong> {{ movie.genres }}</p>
+            {% if movie.publisher %}<p><strong>Виробництво:</strong> {{ movie.publisher }}</p>{% endif %}
+            {% if movie.actors %}<p><strong>У головних ролях:</strong> {{ movie.actors }}</p>{% endif %}
+            <p><strong>Тривалість:</strong> {{ movie.duration_minutes }} хв.</p>
+            <div class="session-details-bottom">
+                <p><i class="fas fa-calendar-alt"></i> {{ session.date|date:"d.m.Y" }}</p>
+                <p><i class="fas fa-clock"></i> {{ session.time|time:"H:i" }}</p>
+                <p><i class="fas fa-door-open"></i> Зал №{{ session.hall }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><span class="seat-available"></span> Доступно ({{ regular_price|floatformat:"0" }} UAH)</div>
+        <div class="legend-item"><span class="seat-selected"></span> Вибрано</div>
+        <div class="legend-item"><span class="seat-vip"></span> VIP ({{ vip_price|floatformat:"0" }} UAH)</div>
+        <div class="legend-item"><span class="seat-sold"></span> Продано</div>
+    </div>
+
+    <div class="main-seat-selection-area">
+        <div class="seats-and-screen-wrapper">
+            {% if movie.trailer_url %}
+            <div class="trailer-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ movie.trailer_url|cut:"https://www.youtube.com/watch?v=" }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            {% else %}
+            <div class="screen">Екран</div>
+            {% endif %}
+            <div class="seats-grid">
+                {% comment %} Representing 5 rows of 10 seats, last row as VIP {% endcomment %}
+                {% for row_num in "12345"|make_list %}
+                    <div class="seat-row">
+                        {% for seat_num in "1234567890"|make_list %}
+                            {% if forloop.parentloop.last %}
+                                {% comment %} Last row is VIP {% endcomment %}
+                                <div class="seat seat-vip" data-price="{{ vip_price|floatformat:"0" }}" data-row="{{ row_num }}" data-seat="{{ seat_num }}"></div>
+                            {% else %}
+                                <div class="seat seat-available" data-price="{{ regular_price|floatformat:"0" }}" data-row="{{ row_num }}" data-seat="{{ seat_num }}"></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="summary-panel">
+            <h3>Оберіть ваші місця на схемі залу</h3>
+            <div class="selected-seats-info">
+                <p>Вибрані місця: <span id="selected-seats-list">Не вибрано</span></p>
+                <p>Кількість квитків: <span id="ticket-count">0</span></p>
+            </div>
+            <div id="price-breakdown" class="price-breakdown"></div>
+            <div class="total-price">
+                <p>Всього до сплати: <span id="total-price">0</span> UAH</p>
+            </div>
+            <button id="buy-tickets-btn" class="buy-tickets-btn" disabled>Купити квитки</button>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const seats = document.querySelectorAll('.seat.seat-available, .seat.seat-vip');
+        const selectedSeatsList = document.getElementById('selected-seats-list');
+        const ticketCountSpan = document.getElementById('ticket-count');
+        const totalPriceSpan = document.getElementById('total-price');
+        const buyTicketsBtn = document.getElementById('buy-tickets-btn');
+        const priceBreakdownDiv = document.getElementById('price-breakdown');
+
+        let selectedSeats = [];
+
+        seats.forEach(seat => {
+            seat.addEventListener('click', function() {
+                if (this.classList.contains('seat-sold')) {
+                    return; // Cannot select sold seats
+                }
+
+                if (this.classList.contains('seat-selected')) {
+                    this.classList.remove('seat-selected');
+                    this.classList.add(this.dataset.originalClass); // Revert to original class (available or vip)
+                    selectedSeats = selectedSeats.filter(s => s !== this);
+                } else {
+                    this.dataset.originalClass = this.classList.contains('seat-available') ? 'seat-available' : 'seat-vip';
+                    this.classList.add('seat-selected');
+                    this.classList.remove('seat-available');
+                    this.classList.remove('seat-vip');
+                    selectedSeats.push(this);
+                }
+                updateSummary();
+            });
+        });
+
+        function updateSummary() {
+            let count = selectedSeats.length;
+            let total = 0;
+            let seatsText = [];
+            let vipTicketCount = 0;
+            let regularTicketCount = 0;
+            let vipTotalPrice = 0;
+            let regularTotalPrice = 0;
+
+            selectedSeats.forEach(seat => {
+                const price = parseInt(seat.dataset.price);
+                const row = seat.dataset.row;
+                const seatNum = seat.dataset.seat;
+                const seatType = seat.dataset.originalClass === 'seat-vip' ? 'VIP Місце' : 'Звичайне Місце';
+                const seatDescription = `${seatType} (Ряд ${row}, Місце ${seatNum})`;
+
+                total += price;
+                seatsText.push(seatDescription);
+
+                if (seat.dataset.originalClass === 'seat-vip') {
+                    vipTicketCount++;
+                    vipTotalPrice += price;
+                } else {
+                    regularTicketCount++;
+                    regularTotalPrice += price;
+                }
+            });
+
+            selectedSeatsList.textContent = seatsText.length > 0 ? seatsText.join(', ') : 'Не вибрано';
+            ticketCountSpan.textContent = count;
+
+            let breakdownHtml = '';
+            if (regularTicketCount > 0) {
+                breakdownHtml += `<p>Звичайні квитки: ${regularTicketCount} x ${regularTotalPrice / regularTicketCount} UAH = <span>${regularTotalPrice} UAH</span></p>`;
+            }
+            if (vipTicketCount > 0) {
+                breakdownHtml += `<p>VIP квитки: ${vipTicketCount} x ${vipTotalPrice / vipTicketCount} UAH = <span>${vipTotalPrice} UAH</span></p>`;
+            }
+            priceBreakdownDiv.innerHTML = breakdownHtml;
+
+            totalPriceSpan.textContent = total;
+            buyTicketsBtn.disabled = count === 0;
+        }
+    });
+</script>
+
+{% endblock %} 

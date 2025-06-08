@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Вхід
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4 mb-5 bg-white rounded auth-card">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Вхід</h2>
+                    {% if request.GET.next %}
+                        <div class="alert alert-info text-center" role="alert">
+                            Будь ласка, увійдіть, щоб купити квитки.
+                        </div>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Вхід</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-3">Не зареєстровані? <a href="{% url 'register' %}">Зробіть це тут!</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

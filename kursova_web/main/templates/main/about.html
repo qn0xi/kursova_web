@@ -1,0 +1,86 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Про нас{% endblock %}
+
+{% block content %}
+<div class="banner-about">
+    <img src="{% static 'main/images/banner_about.webp' %}" alt="Кінотеатр Галактика">
+</div>
+
+<section class="about-section">
+    <div class="about-container">
+        <h1 class="about-title">Про нас</h1>
+        
+        <div class="intro-text-block">
+            <div class="intro-image-container">
+                <img src="{% static 'main/images/banner_about.png' %}" alt="Кінотеатр Галактика">
+            </div>
+            <p>Кінотеатр Галактика було засновано у 2023 році з пристрасною місією - створити найкращий простір для любителів кіно в Україні. Ми віримо, що перегляд фільмів - це не просто дозвілля, а справжнє мистецтво та можливість зануритися в інші світи. Наша місія - дарувати незабутні емоції та враження від перегляду фільмів. Ми прагнемо забезпечити найвищу якість зображення та звуку, неперевершений комфорт та інноваційні технології, щоб кожен ваш візит до Галактики був справжнім святом кіно. Ми цінуємо комфорт, якість, інновації та незабутні враження для наших відвідувачів.</p>
+        </div>
+
+        <h2 class="section-title">Наші технології</h2>
+
+        <div class="tech-feature-container">
+            <div class="tech-feature-card tech-feature-image-left">
+                <div class="tech-feature-image">
+                    <img src="{% static 'main/images/about5.png' %}" alt="Інтерактивні Голограми">
+                </div>
+                <div class="tech-feature-content">
+                    <h3>Голографічна Проекція 8K</h3>
+                    <p>Зануртеся в нове вимірювання кіно з нашою революційною голографічною проекцією 8K. Це не просто зображення, це жива реальність, що розгортається прямо перед вами, роблячи кожен фільм незабутнім досвідом.</p>
+                </div>
+            </div>
+
+            <div class="tech-feature-card tech-feature-image-right">
+                <div class="tech-feature-image">
+                    <img src="{% static 'main/images/about4.png' %}" alt="Адаптивний Звук">
+                </div>
+                <div class="tech-feature-content">
+                    <h3>Адаптивна Звукова Сцена Dolby Aura</h3>
+                    <p>Відчуйте кожну ноту, кожен шепіт та кожен вибух з нашою адаптивною звуковою системою Dolby Aura, яка динамічно підлаштовується під вас, створюючи ідеальний акустичний простір.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Наші особливості</h2>
+
+        <div class="tech-feature-container">
+            <div class="tech-feature-card tech-feature-image-left">
+                <div class="tech-feature-image">
+                    <img src="{% static 'main/images/about3.png' %}" alt="Персоналізований Комфорт">
+                </div>
+                <div class="tech-feature-content">
+                    <h3>Крісла з Інтелектуальним Комфортом</h3>
+                    <p>Наші крісла не просто зручні – вони адаптуються під ваші біометричні дані, забезпечуючи індивідуальний комфорт та підтримку протягом усього сеансу. Забудьте про втому і насолоджуйтесь кожною миттю.</p>
+                </div>
+            </div>
+
+            <div class="tech-feature-card tech-feature-image-right">
+                <div class="tech-feature-image">
+                    <img src="{% static 'main/images/about2.png' %}" alt="Сенсорні Інтерфейси">
+                </div>
+                <div class="tech-feature-content">
+                    <h3>Інтуїтивні Сенсорні Інтерфейси</h3>
+                    <p>Керуйте своїм кінодосвідом за допомогою інтуїтивних сенсорних інтерфейсів, інтегрованих у кожне крісло. Налаштовуйте освітлення, температуру та навіть замовляйте закуски, не відволікаючись від фільму.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Наша Команда</h2>
+
+        <div class="tech-feature-container">
+            <div class="tech-feature-card tech-feature-image-left">
+                <div class="tech-feature-image">
+                    <img src="{% static 'main/images/about1.png' %}" alt="Професіонали своєї справи">
+                </div>
+                <div class="tech-feature-content">
+                    <h3>Професіонали своєї справи</h3>
+                    <p>За кожним успішним сеансом стоїть наша віддана команда - від адміністраторів та касирів до технічного персоналу. Ми всі є пристрасними кіноманами і працюємо над тим, щоб кожен ваш візит до Галактики був ідеальним.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %} 

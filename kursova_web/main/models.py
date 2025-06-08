@@ -9,12 +9,16 @@ class Movie(models.Model):
 
     title = models.CharField('Назва', max_length=100)
     movie = models.TextField('Опис')
-    poster = models.ImageField(upload_to='movie_posters/', blank=True, null=True)
+    poster = models.ImageField('Постер', upload_to='movie_posters/', blank=True, null=True)
     age_rating = models.CharField('Віковий рейтинг', max_length=10, blank=True, null=True)
     format = models.CharField('Формат', max_length=10, blank=True, null=True)
     percentage_category = models.CharField('Категорія %', max_length=10, blank=True, null=True)
+    duration_minutes = models.IntegerField('Тривалість (хв)', blank=True, null=True)
     status = models.CharField('Статус', max_length=20, choices=STATUS_CHOICES, default='now_showing')
     genres = models.CharField('Жанри', max_length=255, blank=True, null=True)
+    actors = models.TextField('У головних ролях', blank=True, null=True)
+    publisher = models.CharField('Виробництво', max_length=100, blank=True, null=True)
+    trailer_url = models.URLField('Посилання на трейлер (YouTube)', blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -23,10 +27,11 @@ class Movie(models.Model):
 
 class MovieSchedule(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    date = models.DateField()
-    time = models.TimeField()
-    hall = models.CharField(max_length=50)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    date = models.DateField('Дата', null=True, blank=True)
+    time = models.TimeField('Час', null=True, blank=True)
+    hall = models.CharField('Зал', max_length=50, null=True, blank=True)
+    price = models.DecimalField('Ціна квитків', max_digits=6, decimal_places=2, default=200.00, null=True, blank=True)
+    vip_price = models.DecimalField('Ціна VIP квитків', max_digits=6, decimal_places=2, null=True, blank=True)
     
     class Meta:
         ordering = ['date', 'time']
