@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const dropdownMenu = document.querySelector('.dropdown-menu');
-    const menuButton = document.querySelector('.menu-button');
+    const dropdownMenu = document.querySelector('.custom-dropdown-menu');
+    const menuButton = document.querySelector('.custom-menu-button');
 
     // Функція для закриття меню при кліку поза ним
     function closeMenu(event) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Закриваємо меню при кліку на пункт меню
-    const menuItems = document.querySelectorAll('.dropdown-content a');
+    const menuItems = document.querySelectorAll('.custom-dropdown-content a');
     menuItems.forEach(item => {
         item.addEventListener('click', function() {
             dropdownMenu.classList.remove('active');

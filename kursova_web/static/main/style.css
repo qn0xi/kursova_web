@@ -11,6 +11,7 @@ body {
     color: #e6e6e6;
     background-image: radial-gradient(circle at top right, rgba(121, 68, 154, 0.13), transparent),
     radial-gradient(circle at bottom left, rgba(65, 88, 208, 0.13), transparent);
+    overflow-x: hidden;
 }
 
 /* Хедер */
@@ -166,13 +167,13 @@ header {
     transform: translateY(-2px);
 }
 
-/* Випадаюче меню */
-.dropdown-menu {
+/* Custom Dropdown Menu Styles (no Bootstrap) */
+.custom-dropdown-menu {
     position: relative;
     display: inline-block;
 }
 
-.menu-button {
+.custom-menu-button {
     background: none;
     border: none;
     cursor: pointer;
@@ -182,7 +183,7 @@ header {
     justify-content: center;
 }
 
-.menu-icon {
+.custom-menu-icon {
     display: block;
     width: 24px;
     height: 2px;
@@ -191,8 +192,8 @@ header {
     transition: all 0.3s ease;
 }
 
-.menu-icon::before,
-.menu-icon::after {
+.custom-menu-icon::before,
+.custom-menu-icon::after {
     content: '';
     position: absolute;
     width: 24px;
@@ -201,21 +202,21 @@ header {
     transition: all 0.3s ease;
 }
 
-.menu-icon::before {
+.custom-menu-icon::before {
     top: -8px;
 }
 
-.menu-icon::after {
+.custom-menu-icon::after {
     bottom: -8px;
 }
 
-.menu-button:hover .menu-icon,
-.menu-button:hover .menu-icon::before,
-.menu-button:hover .menu-icon::after {
+.custom-menu-button:hover .custom-menu-icon,
+.custom-menu-button:hover .custom-menu-icon::before,
+.custom-menu-button:hover .custom-menu-icon::after {
     background-color: #8a5cf6;
 }
 
-.dropdown-content {
+.custom-dropdown-content {
     position: absolute;
     left: 100%;
     top: 0;
@@ -225,7 +226,6 @@ header {
     border-radius: 8px;
     padding: 20px 0;
     z-index: 100;
-    border: 1px solid rgba(138, 75, 175, 0.2);
     max-height: none;
     overflow-y: auto;
     opacity: 0;
@@ -234,7 +234,7 @@ header {
     transition: all 0.3s ease;
 }
 
-.dropdown-content a {
+.custom-dropdown-content a {
     color: #e6e6e6;
     padding: 15px 25px;
     text-decoration: none;
@@ -247,40 +247,61 @@ header {
     transition: all 0.3s ease;
 }
 
-.dropdown-content a:last-child {
+.custom-dropdown-content a:last-child {
     border-bottom: none;
 }
 
-.dropdown-content a:hover {
+.custom-dropdown-content a:hover {
     background-color: rgba(138, 92, 246, 0.1);
     color: #8a5cf6;
 }
 
-.dropdown-menu.active .dropdown-content {
+.custom-dropdown-menu.active .custom-dropdown-content {
     opacity: 1;
     visibility: visible;
     transform: translateX(0);
 }
 
-.dropdown-menu.active .dropdown-content a {
+.custom-dropdown-menu.active .custom-dropdown-content a {
     opacity: 1;
     transform: translateX(0);
 }
 
-.dropdown-menu.active .menu-icon {
+.custom-dropdown-menu.active .custom-menu-icon {
     background-color: transparent;
 }
 
-.dropdown-menu.active .menu-icon::before {
+.custom-dropdown-menu.active .custom-menu-icon::before {
     transform: rotate(45deg);
     top: 0;
     background-color: #8a5cf6;
 }
 
-.dropdown-menu.active .menu-icon::after {
+.custom-dropdown-menu.active .custom-menu-icon::after {
     transform: rotate(-45deg);
     bottom: 0;
     background-color: #8a5cf6;
+}
+
+@media (max-width: 768px) {
+    .custom-dropdown-menu {
+        order: 2;
+    }
+    .custom-dropdown-content {
+        left: auto;
+        right: 0;
+        top: 100%;
+        transform: translateY(-10px);
+        min-width: 220px;
+        padding: 15px 0;
+    }
+    .custom-dropdown-content a {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+    .custom-dropdown-menu.active .custom-dropdown-content {
+        transform: translateY(0);
+    }
 }
 
 /* Адаптивність для меню на менших екранах */
@@ -311,26 +332,8 @@ header {
         margin-left: auto;
     }
 
-    .dropdown-menu {
+    .custom-dropdown-menu {
         order: 2;
-    }
-
-    .dropdown-content {
-        left: auto;
-        right: 0;
-        top: 100%;
-        transform: translateY(-10px);
-        min-width: 220px;
-        padding: 15px 0;
-    }
-
-    .dropdown-content a {
-        padding: 12px 20px;
-        font-size: 16px;
-    }
-
-    .dropdown-menu.active .dropdown-content {
-        transform: translateY(0);
     }
 }
 
@@ -744,10 +747,9 @@ main {
 }
 
 .movie-genres {
+    font-size: 0.9em;
     color: #a0aec0;
-    font-size: 14px;
-    margin-bottom: 12px;
-    max-height: 35px;
+    margin-bottom: 15px;
 }
 
 .buy-button {
@@ -758,17 +760,40 @@ main {
     text-align: center;
     padding: 10px 0;
     border-radius: 6px;
-    text-decoration: none;
     font-weight: 500;
+    box-shadow: 0 4px 10px rgba(138, 92, 246, 0.3);
+    text-decoration: none;
     transition: all 0.3s;
     border: none;
-    box-shadow: 0 4px 10px rgba(138, 92, 246, 0.3);
     margin-top: auto; /* Це розташує кнопку внизу контейнера */
 }
 
 .buy-button:hover {
+    background: linear-gradient(to right, #9333ea, #e11d48); /* Reverse gradient on hover */
+    box-shadow: 0 6px 15px rgba(138, 92, 246, 0.5); /* Even stronger shadow */
+    transform: translateY(-2px); /* More pronounced lift */
+}
+
+.buy-ticket-button {
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+    background: linear-gradient(to right, #8a5cf6, #ec4899);
+    color: #fff;
+    border: none;
+    box-shadow: 0 0 10px rgba(138, 92, 246, 0.3);
+}
+
+.buy-ticket-button:hover {
     background: linear-gradient(to right, #9333ea, #e11d48);
-    box-shadow: 0 6px 15px rgba(138, 92, 246, 0.5);
+    box-shadow: 0 0 15px rgba(138, 92, 246, 0.5);
     transform: translateY(-2px);
 }
 
@@ -781,16 +806,18 @@ footer {
 }
 
 .footer-container {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 40px;
 }
 
 .footer-column {
-    flex: 0 0 calc(25% - 20px);
+    flex: 1 1 200px;
+    min-width: 180px;
     margin-bottom: 30px;
 }
 
@@ -800,20 +827,27 @@ footer {
     margin-bottom: 20px;
     position: relative;
     padding-bottom: 10px;
+    text-align: left;
+    width: fit-content;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .footer-column h3::after {
     content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 6px;
+    width: 60%;
     height: 2px;
     background: linear-gradient(to right, #8a5cf6, #ec4899);
+    border-radius: 2px;
 }
 
 .footer-column ul {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .footer-column ul li {
@@ -851,27 +885,39 @@ footer {
 }
 
 .copyright {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 1100px;
+    margin: 40px auto 0 auto;
+    padding: 20px 0 0 0;
     text-align: center;
     color: #a0aec0;
     border-top: 1px solid rgba(138, 75, 175, 0.2);
-    margin-top: 30px;
     font-size: 16px;
 }
 
-@media (max-width: 768px) {
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+    }
     .footer-column {
-        flex: 0 0 calc(50% - 20px);
+        min-width: 0;
+        width: auto;
+        text-align: center;
+        margin-bottom: 18px;
+    }
+    .footer-column h3 {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+    .social-icons {
+        justify-content: center;
     }
 }
 
-@media (max-width: 576px) {
-    .footer-column {
-        flex: 0 0 100%;
-    }
-}
 /* Styles for the schedule date picker */
 .schedule-date-label {
     font-size: 1.2em; /* Increase font size */
@@ -1434,9 +1480,14 @@ footer {
     background-color: #ffc107;
 }
 
-.seat-sold {
-    background-color: #6c757d;
+.seat.seat-sold {
+    background-color: #b0b0b0 !important;
+    border: 2px solid #888 !important;
+    color: #fff !important;
+    opacity: 0.6;
     cursor: not-allowed;
+    box-shadow: none;
+    filter: grayscale(1);
 }
 
 .screen {
@@ -1540,8 +1591,13 @@ footer {
 }
 
 .seat.seat-sold {
-    background-color: #6c757d;
+    background-color: #b0b0b0 !important;
+    border: 2px solid #888 !important;
+    color: #fff !important;
+    opacity: 0.6;
     cursor: not-allowed;
+    box-shadow: none;
+    filter: grayscale(1);
 }
 
 .summary-panel {
@@ -1967,4 +2023,195 @@ footer {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.text-danger {
+    color: #dc3545 !important; /* Bootstrap's danger color */
+    display: block !important;
+}
+
+.errorlist {
+    color: #dc3545 !important;
+    list-style-type: none !important; /* Remove bullet points */
+    padding-left: 0 !important;
+    margin-top: 5px !important;
+}
+
+.errorlist li {
+    font-size: 0.875em !important;
+}
+
+.card-body .card-title {
+    color: #ffffff !important;
+}
+
+/* Modal Styles for Movie Details */
+.modal-content {
+    background-color: #1a202c; /* Dark background matching the theme */
+    color: #e6e6e6; /* Light text color */
+    border: 1px solid rgba(138, 75, 175, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    max-width: 900px; /* Increased max-width */
+    width: 90%; /* Responsive width */
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(138, 75, 175, 0.3);
+}
+
+.modal-title {
+    color: #8a5cf6; /* Highlight title */
+}
+
+.modal-body strong {
+    color: #e6e6e6; /* Ensure labels are clearly visible */
+}
+
+#modalMoviePoster {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    object-fit: contain;
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(138, 75, 175, 0.3);
+}
+
+.modal-footer .btn-secondary {
+    background-color: #4a5568;
+    color: #e6e6e6;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: #2d3748;
+}
+
+.close-modal-button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    min-width: 150px;
+}
+
+/* Ensure the card title is white */
+.card-body .card-title {
+    color: #ffffff !important;
+}
+
+/* Trailer in Modal */
+.modal-trailer-iframe {
+    width: 100%;
+    max-width: 560px; /* Max width to match typical YouTube embeds */
+    aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */
+    display: block; /* Ensure it takes full width of its container */
+    margin: 20px auto 0 auto; /* Center the trailer and add top margin */
+}
+
+/* Responsive adjustments for movie gallery */
+.movie-gallery-container {
+    padding: 20px 0;
+}
+
+@media (max-width: 1200px) {
+    .movie-gallery-container .card {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .movie-gallery-container .row-cols-md-4 > .col {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .movie-gallery-container .row-cols-md-4 > .col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    .movie-gallery-container {
+        padding: 10px 0;
+    }
+    .modal-content {
+        padding: 10px;
+    }
+    #modalMoviePoster {
+        max-width: 100%;
+        max-height: 220px;
+        height: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .movie-gallery-container h1 {
+        font-size: 1.5em;
+    }
+    .modal-dialog {
+        max-width: 100vw;
+        width: 100vw;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .modal-content {
+        border-radius: 12px;
+        width: 100vw;
+        min-width: 0;
+        box-sizing: border-box;
+        padding: 8px 0 16px 0;
+        max-height: 98vh;
+        overflow-y: auto;
+    }
+    .modal-header, .modal-footer, .modal-body {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .modal-title {
+        font-size: 1.2em;
+        text-align: center;
+        width: 100%;
+    }
+    .btn-close, .close-modal-button {
+        margin-right: 0;
+    }
+    #modalMoviePoster {
+        max-width: 100%;
+        max-height: 220px;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    #movieDetailModal .modal-body .row {
+        flex-direction: column;
+    }
+    #movieDetailModal .col-md-4,
+    #movieDetailModal .col-md-8 {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+}
+
+@media (max-width: 1730px) and (min-width: 769px) {
+    .custom-dropdown-content {
+        left: auto;
+        right: 100%;
+        top: 0;
+        transform: translateX(10px);
+    }
+    .custom-dropdown-menu.active .custom-dropdown-content {
+        transform: translateX(0);
+    }
 }

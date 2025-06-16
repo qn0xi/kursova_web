@@ -19,6 +19,7 @@ class Movie(models.Model):
     actors = models.TextField('У головних ролях', blank=True, null=True)
     publisher = models.CharField('Виробництво', max_length=100, blank=True, null=True)
     trailer_url = models.URLField('Посилання на трейлер (YouTube)', blank=True, null=True)
+    display_on_website = models.BooleanField('Відображати на сайті', default=True)
 
     def __str__(self):
         return self.title
@@ -31,10 +32,24 @@ class MovieSchedule(models.Model):
     time = models.TimeField('Час', null=True, blank=True)
     hall = models.CharField('Зал', max_length=50, null=True, blank=True)
     price = models.DecimalField('Ціна квитків', max_digits=6, decimal_places=2, default=200.00, null=True, blank=True)
-    vip_price = models.DecimalField('Ціна VIP квитків', max_digits=6, decimal_places=2, null=True, blank=True)
+    vip_price = models.DecimalField('Ціна VIP квитків', max_digits=6, decimal_places=2, default=350.00, null=True, blank=True)
     
     class Meta:
         ordering = ['date', 'time']
     
     def __str__(self):
         return f"{self.movie.title} - {self.date} {self.time}"
+
+class PurchasedSeat(models.Model):
+    session = models.ForeignKey(MovieSchedule, on_delete=models.CASCADE, related_name='purchased_seats')
+    row = models.IntegerField()
+    seat = models.IntegerField()
+    seat_type = models.CharField(max_length=20, default='Звичайне місце')
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    purchased_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('session', 'row', 'seat')
+
+    def __str__(self):
+        return f"Session {self.session.id}: Row {self.row}, Seat {self.seat} ({self.seat_type})"

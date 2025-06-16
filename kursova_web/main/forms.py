@@ -1,41 +1,41 @@
+import re
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit
 
-class UserRegisterForm(UserCreationForm):
+class UserRegisterForm(forms.ModelForm):
+    username = forms.CharField(label='Ім\'я користувача')
     email = forms.EmailField(label='Електронна пошта')
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Підтвердження пароля', widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'password2']
-        labels = {
-            'username': 'Ім\'я користувача',
-            'password': 'Пароль',
-            'password2': 'Підтвердження пароля',
-        }
-        help_texts = {
-            'username': '',
-            'password': '',
-            'password2': '',
-        }
+        fields = ['username', 'email']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name in ['username', 'email', 'password', 'password2']:
-            if field_name in self.fields:
-                self.fields[field_name].help_text = None
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email:
+            valid = re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
+            if not valid:
+                self.add_error('email', "Будь ласка, введіть дійсну адресу електронної пошти.")
+        return email
 
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            'username',
-            'email',
-            'password',
-            'password2',
-        )
-        self.helper.add_input(Submit('submit', 'Зареєструватися'))
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password2 = cleaned_data.get('password2')
 
+        if password and password2 and password != password2:
+            raise forms.ValidationError("Паролі не співпадають.")
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(label='Ім\'я користувача')

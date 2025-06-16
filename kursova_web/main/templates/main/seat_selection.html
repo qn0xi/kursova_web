@@ -47,14 +47,17 @@
             {% endif %}
             <div class="seats-grid">
                 {% comment %} Representing 5 rows of 10 seats, last row as VIP {% endcomment %}
-                {% for row_num in "12345"|make_list %}
+                {% for row in hall_seats_data %}
                     <div class="seat-row">
-                        {% for seat_num in "1234567890"|make_list %}
-                            {% if forloop.parentloop.last %}
-                                {% comment %} Last row is VIP {% endcomment %}
-                                <div class="seat seat-vip" data-price="{{ vip_price|floatformat:"0" }}" data-row="{{ row_num }}" data-seat="{{ seat_num }}"></div>
+                        {% for seat in row %}
+                            {% if seat.is_taken %}
+                                <div class="seat seat-sold" data-row="{{ seat.row }}" data-seat="{{ seat.seat_num }}"></div>
                             {% else %}
-                                <div class="seat seat-available" data-price="{{ regular_price|floatformat:"0" }}" data-row="{{ row_num }}" data-seat="{{ seat_num }}"></div>
+                                {% if seat.is_vip %}
+                                    <div class="seat seat-vip" data-price="{{ seat.price }}" data-row="{{ seat.row }}" data-seat="{{ seat.seat_num }}"></div>
+                                {% else %}
+                                    <div class="seat seat-available" data-price="{{ seat.price }}" data-row="{{ seat.row }}" data-seat="{{ seat.seat_num }}"></div>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -108,6 +111,49 @@
                 updateSummary();
             });
         });
+
+        // --- Add purchase logic ---
+        buyTicketsBtn.addEventListener('click', function() {
+            if (selectedSeats.length === 0) return;
+            const seatsPayload = selectedSeats.map(seat => ({
+                row: seat.dataset.row,
+                seat: seat.dataset.seat,
+                type: seat.dataset.originalClass === 'seat-vip' ? 'VIP місце' : 'Звичайне місце'
+            }));
+            fetch(window.location.pathname.replace('/select_seats/', '/purchase/'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ seats: seatsPayload })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Дякуємо за покупку! Лист надіслано на вашу пошту.');
+                    window.location.reload();
+                } else {
+                    alert('Помилка: ' + (data.error || 'Щось пішло не так.'));
+                }
+            })
+            .catch(() => alert('Помилка при відправці запиту.'));
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
 
         function updateSummary() {
             let count = selectedSeats.length;

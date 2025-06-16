@@ -23,7 +23,7 @@
                 {% if movie.genres %}
                     <p class="movie-genres">{{ movie.genres }}</p>
                 {% endif %}
-                <a href="{% url 'schedule' %}?movie_id={{ movie.id }}" class="buy-button">Купити квиток</a>
+                <a href="{% url 'schedule' %}" class="buy-button">Купити квиток</a>
             </div>
         </div>
         {% empty %}

@@ -1,0 +1,130 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}
+    Галерея Фільмів
+{% endblock %}
+
+{% block content %}
+<div class="container movie-gallery-container">
+    <h1 class="my-4 text-center">Фільми в Галактиці</h1>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        {% for movie in movies %}
+        <div class="col mb-4">
+            <div class="card h-100 movie-card" data-movie-id="{{ movie.id }}">
+                {% if movie.poster %}
+                <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}">
+                {% else %}
+                <img src="{% static 'main/images/no_poster.jpg' %}" class="card-img-top" alt="No Poster Available">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title text-center">{{ movie.title }}</h5>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Немає доступних фільмів.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Floating window for movie details -->
+<div id="movieDetailModal" class="modal fade" tabindex="-1" aria-labelledby="movieDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="movieDetailModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="modalMoviePoster" src="" class="img-fluid rounded" alt="Movie Poster">
+                    </div>
+                    <div class="col-md-8">
+                        <div id="modalMovieTrailer" class="mb-3"></div>
+                        <p><strong>Опис:</strong> <span id="modalMovieDescription"></span></p>
+                        <p><strong>Віковий рейтинг:</strong> <span id="modalMovieAgeRating"></span></p>
+                        <p><strong>Формат:</strong> <span id="modalMovieFormat"></span></p>
+                        <p><strong>Тривалість:</strong> <span id="modalMovieDuration"></span> хвилин</p>
+                        <p><strong>Жанри:</strong> <span id="modalMovieGenres"></span></p>
+                        <p><strong>У головних ролях:</strong> <span id="modalMovieActors"></span></p>
+                        <p><strong>Виробництво:</strong> <span id="modalMoviePublisher"></span></p>
+                        <p><strong>Статус:</strong> <span id="modalMovieStatus"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="buyTicketButton" href="#" class="buy-ticket-button">Купити квиток</a>
+                <button type="button" class="btn btn-secondary close-modal-button" data-bs-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var movieCards = document.querySelectorAll('.movie-card');
+        movieCards.forEach(function(card) {
+            card.addEventListener('click', function() {
+                var movieId = this.dataset.movieId;
+                fetch(`/movies/details/${movieId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('movieDetailModalLabel').textContent = data.title;
+                        document.getElementById('modalMoviePoster').src = data.poster;
+                        document.getElementById('modalMovieDescription').textContent = data.movie;
+                        document.getElementById('modalMovieAgeRating').textContent = data.age_rating;
+                        document.getElementById('modalMovieFormat').textContent = data.format;
+                        document.getElementById('modalMovieDuration').textContent = data.duration_minutes;
+                        document.getElementById('modalMovieGenres').textContent = data.genres;
+                        document.getElementById('modalMovieActors').textContent = data.actors;
+                        document.getElementById('modalMoviePublisher').textContent = data.publisher;
+                        document.getElementById('modalMovieStatus').textContent = data.status_display;
+
+                        var trailerDiv = document.getElementById('modalMovieTrailer');
+                        trailerDiv.innerHTML = ''; // Clear previous trailer
+                        if (data.trailer_url) {
+                            console.log('Trailer URL found:', data.trailer_url);
+                            var youtubeId = getYouTubeId(data.trailer_url);
+                            if (youtubeId) {
+                                console.log('YouTube ID extracted:', youtubeId);
+                                var iframe = document.createElement('iframe');
+                                iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
+                                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                                iframe.allowFullscreen = true;
+                                iframe.classList.add('modal-trailer-iframe');
+                                trailerDiv.appendChild(iframe);
+                            }
+                        }
+
+                        // Handle Buy Ticket Button
+                        var buyTicketButton = document.getElementById('buyTicketButton');
+                        if (data.sessions && data.sessions.length > 0) {
+                            // Assuming the first session is the one to link to for simplicity
+                            var firstSessionId = data.sessions[0].id;
+                            buyTicketButton.href = `/schedule/`;
+                            buyTicketButton.style.display = 'inline-block'; // Show the button
+                        } else {
+                            buyTicketButton.style.display = 'none'; // Hide if no sessions
+                        }
+
+                        var movieDetailModal = new bootstrap.Modal(document.getElementById('movieDetailModal'));
+                        movieDetailModal.show();
+                        console.log('Modal shown.');
+                    })
+                    .catch(error => console.error('Error fetching movie details:', error));
+            });
+        });
+
+        function getYouTubeId(url) {
+            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            var match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+    });
+</script>
+{% endblock %} 

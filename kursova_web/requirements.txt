@@ -1,3 +1,3 @@
 Django
-crispy-forms
-crispy-bootstrap5
+pillow
+qrcode
