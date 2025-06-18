@@ -1,0 +1,56 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Історія покупок{% endblock %}
+
+{% block content %}
+<section class="purchase-history-section">
+    <div class="container">
+        <h1>Ваша історія покупок</h1>
+        
+        {% if grouped_purchases %}
+            <div class="purchase-list">
+                {% for grouped_purchase in grouped_purchases %}
+                    <div class="purchase-item">
+                        <div class="movie-details-history">
+                            <img src="{{ grouped_purchase.movie.poster.url }}" alt="{{ grouped_purchase.movie.title }} Постер" class="movie-poster-history">
+                            <div class="text-details">
+                                <h3>{{ grouped_purchase.movie.title }}</h3>
+                                <p><strong>Дата сеансу:</strong> {{ grouped_purchase.session.date|date:"d.m.Y" }}</p>
+                                <p><strong>Час сеансу:</strong> {{ grouped_purchase.session.time|time:"H:i" }}</p>
+                                <p><strong>Зал:</strong> №{{ grouped_purchase.session.hall }}</p>
+                                <p><strong>Квитки:</strong></p>
+                                <ul>
+                                    {% for seat_detail in grouped_purchase.seats_details %}
+                                        <li>Ряд {{ seat_detail.row }}, Місце {{ seat_detail.seat }} ({{ seat_detail.seat_type }})</li>
+                                    {% endfor %}
+                                </ul>
+                                <p><strong>Загальна ціна:</strong> {{ grouped_purchase.total_price|floatformat:"2" }} UAH</p>
+                                <p><strong>Куплено:</strong> {{ grouped_purchase.purchased_at|date:"d.m.Y H:i" }}</p>
+                            </div>
+                        </div>
+                        <div class="rating-section">
+                            <h4>Оцініть фільм:</h4>
+                            <div class="stars" data-movie-id="{{ grouped_purchase.movie.id }}" data-existing-rating="{{ grouped_purchase.user_rating }}">
+                                <script>
+                                    console.log(`[HTML Render] Movie ID: {{ grouped_purchase.movie.id }}, Existing Rating: {{ grouped_purchase.user_rating }}`);
+                                </script>
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                            </div>
+                            <button class="submit-rating-btn" data-movie-id="{{ grouped_purchase.movie.id }}">Надіслати оцінку</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>У вас ще немає історії покупок.</p>
+            <p><a href="{% url 'movie_gallery' %}" class="btn btn-primary">Переглянути фільми</a></p>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %} 

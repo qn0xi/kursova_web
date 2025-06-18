@@ -19,6 +19,8 @@ urlpatterns = [
     path('movies/details/<int:movie_id>/', views.movie_details, name='movie_details'),
     path('schedule/<int:session_id>/purchase/', views.purchase_tickets, name='purchase_tickets'),
     path('admin_statistics/', views.admin_statistics, name='admin_statistics'),
+    path('purchase_history/', views.purchase_history, name='purchase_history'),
+    path('submit_rating/', views.submit_rating, name='submit_rating'),
 ]
 
 if settings.DEBUG:

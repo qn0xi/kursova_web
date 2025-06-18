@@ -19,6 +19,11 @@
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title text-center">{{ movie.title }}</h5>
+                    {% if movie.average_rating %}
+                        <p class="card-text text-center">Рейтинг: {{ movie.average_rating|floatformat:0 }}/5 <i class="fas fa-star" style="color: gold;"></i></p>
+                    {% else %}
+                        <p class="card-text text-center">Немає оцінок</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -51,6 +56,7 @@
                         <p><strong>У головних ролях:</strong> <span id="modalMovieActors"></span></p>
                         <p><strong>Виробництво:</strong> <span id="modalMoviePublisher"></span></p>
                         <p><strong>Статус:</strong> <span id="modalMovieStatus"></span></p>
+                        <p><strong>Середня оцінка:</strong> <span id="modalMovieAverageRating"></span>/5 <i class="fas fa-star" style="color: gold;"></i></p>
                     </div>
                 </div>
             </div>
@@ -64,67 +70,4 @@
 
 {% endblock %}
 
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var movieCards = document.querySelectorAll('.movie-card');
-        movieCards.forEach(function(card) {
-            card.addEventListener('click', function() {
-                var movieId = this.dataset.movieId;
-                fetch(`/movies/details/${movieId}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('movieDetailModalLabel').textContent = data.title;
-                        document.getElementById('modalMoviePoster').src = data.poster;
-                        document.getElementById('modalMovieDescription').textContent = data.movie;
-                        document.getElementById('modalMovieAgeRating').textContent = data.age_rating;
-                        document.getElementById('modalMovieFormat').textContent = data.format;
-                        document.getElementById('modalMovieDuration').textContent = data.duration_minutes;
-                        document.getElementById('modalMovieGenres').textContent = data.genres;
-                        document.getElementById('modalMovieActors').textContent = data.actors;
-                        document.getElementById('modalMoviePublisher').textContent = data.publisher;
-                        document.getElementById('modalMovieStatus').textContent = data.status_display;
-
-                        var trailerDiv = document.getElementById('modalMovieTrailer');
-                        trailerDiv.innerHTML = ''; // Clear previous trailer
-                        if (data.trailer_url) {
-                            console.log('Trailer URL found:', data.trailer_url);
-                            var youtubeId = getYouTubeId(data.trailer_url);
-                            if (youtubeId) {
-                                console.log('YouTube ID extracted:', youtubeId);
-                                var iframe = document.createElement('iframe');
-                                iframe.src = `https://www.youtube.com/embed/${youtubeId}`;
-                                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                                iframe.allowFullscreen = true;
-                                iframe.classList.add('modal-trailer-iframe');
-                                trailerDiv.appendChild(iframe);
-                            }
-                        }
-
-                        // Handle Buy Ticket Button
-                        var buyTicketButton = document.getElementById('buyTicketButton');
-                        if (data.sessions && data.sessions.length > 0) {
-                            // Assuming the first session is the one to link to for simplicity
-                            var firstSessionId = data.sessions[0].id;
-                            buyTicketButton.href = `/schedule/`;
-                            buyTicketButton.style.display = 'inline-block'; // Show the button
-                        } else {
-                            buyTicketButton.style.display = 'none'; // Hide if no sessions
-                        }
-
-                        var movieDetailModal = new bootstrap.Modal(document.getElementById('movieDetailModal'));
-                        movieDetailModal.show();
-                        console.log('Modal shown.');
-                    })
-                    .catch(error => console.error('Error fetching movie details:', error));
-            });
-        });
-
-        function getYouTubeId(url) {
-            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-            var match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
-        }
-    });
-</script>
-{% endblock %} 
+{% block extra_js %}{% endblock %} 

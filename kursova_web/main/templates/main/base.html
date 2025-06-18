@@ -20,15 +20,29 @@
             <ul class="nav-menu">
                 <li><a href="{% url 'movie_gallery' %}">Фільми</a></li>
                 <li><a href="{% url 'schedule' %}">Розклад</a></li>
+                {% comment %}
                 {% if request.user.is_staff %}
                     <li><a href="{% url 'admin_statistics' %}">Статистика Адміна</a></li>
                 {% endif %}
+                {% endcomment %}
             </ul>
             <div class="header-right">
                 <div class="auth-buttons">
                     {% if user.is_authenticated %}
-                        <a href="#" class="login-button"><i class="fas fa-user"></i> Привіт, {{ user.username }}</a>
-                        <a href="{% url 'logout' %}" class="register-button"><i class="fas fa-sign-out-alt"></i> Вийти</a>
+                        <div class="dropdown">
+                            <a class="login-button dropdown-toggle" href="#" role="button" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> Привіт, {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+                                <li><a class="dropdown-item" href="{% url 'purchase_history' %}"><i class="fas fa-history"></i> Історія покупок</a></li>
+                                {% if request.user.is_staff %}
+                                    <li><a class="dropdown-item" href="/admin/"><i class="fas fa-user-shield"></i> Адмін Панель</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'admin_statistics' %}"><i class="fas fa-chart-bar"></i> Статистика Адміна</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Вийти</a></li>
+                            </ul>
+                        </div>
                     {% else %}
                         <a href="{% url 'login' %}" class="login-button"><i class="fas fa-sign-in-alt"></i> Вхід</a>
                         <a href="{% url 'register' %}" class="register-button"><i class="fas fa-user-plus"></i> Реєстрація</a>

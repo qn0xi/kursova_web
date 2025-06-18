@@ -45,6 +45,7 @@ class PurchasedSeat(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
     seat_type = models.CharField(max_length=20, default='Звичайне місце')
+    price_at_purchase = models.DecimalField('Ціна на момент покупки', max_digits=6, decimal_places=2, null=True, blank=True)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     purchased_at = models.DateTimeField(auto_now_add=True)
 
@@ -53,3 +54,43 @@ class PurchasedSeat(models.Model):
 
     def __str__(self):
         return f"Session {self.session.id}: Row {self.row}, Seat {self.seat} ({self.seat_type})"
+
+    def delete(self, *args, **kwargs):
+        movie = self.session.movie
+        user = self.user
+        super().delete(*args, **kwargs)
+
+        remaining_purchases = PurchasedSeat.objects.filter(user=user, session__movie=movie).count()
+        
+        if remaining_purchases == 0:
+            Rating.objects.filter(user=user, movie=movie).delete()
+            print(f"[DEBUG] Deleted rating for movie {movie.title} for user {user.username} as no purchased seats remain.")
+        else:
+            print(f"[DEBUG] User {user.username} still has {remaining_purchases} purchased seats for movie {movie.title}. Rating not deleted.")
+
+class Rating(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+    rated_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('movie', 'user')
+
+    def __str__(self):
+        return f"{self.movie.title} - {self.user.username} - {self.rating}"
+
+class FeedbackMessage(models.Model):
+    name = models.CharField('Ім\'я', max_length=100)
+    email = models.EmailField('Email')
+    subject = models.CharField('Тема', max_length=200)
+    message = models.TextField('Повідомлення')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Повідомлення зворотнього зв\'язку'
+        verbose_name_plural = 'Повідомлення зворотнього зв\'язку'
+        ordering = ['-submitted_at']
+
+    def __str__(self):
+        return f"Feedback from {self.name} ({self.email}) - {self.subject}"

@@ -2,6 +2,7 @@ import re
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from .models import FeedbackMessage
 
 class UserRegisterForm(forms.ModelForm):
     username = forms.CharField(label='Ім\'я користувача')
@@ -13,12 +14,25 @@ class UserRegisterForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if username:
+            if username.isdigit():
+                raise forms.ValidationError("Ім'я користувача не може складатися лише з цифр.")
+            if len(username) < 3:
+                raise forms.ValidationError("Ім'я користувача має бути не менше 3 символів.")
+        return username
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if email:
             valid = re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)
             if not valid:
-                self.add_error('email', "Будь ласка, введіть дійсну адресу електронної пошти.")
+                raise forms.ValidationError("Будь ласка, введіть дійсну адресу електронної пошти.")
+            
+            if User.objects.filter(email=email).exists():
+                raise forms.ValidationError("Користувач з такою електронною поштою вже зареєстрований.")
+
         return email
 
     def clean(self):
@@ -39,4 +53,15 @@ class UserRegisterForm(forms.ModelForm):
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(label='Ім\'я користувача')
-    password = forms.CharField(widget=forms.PasswordInput, label='Пароль') 
+    password = forms.CharField(widget=forms.PasswordInput, label='Пароль')
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = FeedbackMessage
+        fields = ['name', 'email', 'subject', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'id': 'name', 'required': True}),
+            'email': forms.EmailInput(attrs={'id': 'email', 'required': True}),
+            'subject': forms.TextInput(attrs={'id': 'subject', 'required': True}),
+            'message': forms.Textarea(attrs={'id': 'message', 'rows': 8, 'required': True}),
+        } 

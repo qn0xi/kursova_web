@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Movie, MovieSchedule, PurchasedSeat
+from .models import Movie, MovieSchedule, PurchasedSeat, FeedbackMessage
 
 class MovieScheduleInline(admin.TabularInline):
     model = MovieSchedule
-    extra = 1  # Allows adding one extra schedule form by default
+    extra = 1
     fields = ['date', 'time', 'hall', 'price', 'vip_price']
 
 class MovieAdmin(admin.ModelAdmin):
@@ -13,3 +13,4 @@ class MovieAdmin(admin.ModelAdmin):
 
 admin.site.register(Movie, MovieAdmin)
 admin.site.register(PurchasedSeat)
+admin.site.register(FeedbackMessage)
