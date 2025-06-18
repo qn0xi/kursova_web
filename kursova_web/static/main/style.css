@@ -2897,27 +2897,21 @@ footer {
 }
 
 
-.footer-column ul,
-.footer-column ul li,
-.footer-column a {
-    text-align: left !important;
-    margin-left: 0 !important;
-}
 @media (max-width: 900px) {
-    .footer-column {
-        text-align: center;
-    }
-    .footer-column h3 {
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
-    }
+
     .footer-column ul,
     .footer-column ul li,
     .footer-column a {
         text-align: left !important;
         margin-left: 0 !important;
         display: block;
+    }
+
+
+    .footer-column h3 {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
     }
 }
 

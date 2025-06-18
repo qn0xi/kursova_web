@@ -35,6 +35,21 @@ class UserRegisterForm(forms.ModelForm):
 
         return email
 
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if password:
+            if len(password) < 8:
+                raise forms.ValidationError("Пароль має містити щонайменше 8 символів.")
+            if not re.search(r'[A-Z]', password):
+                raise forms.ValidationError("Пароль має містити хоча б одну велику літеру.")
+            if not re.search(r'[a-z]', password):
+                raise forms.ValidationError("Пароль має містити хоча б одну малу літеру.")
+            if not re.search(r'\d', password):
+                raise forms.ValidationError("Пароль має містити хоча б одну цифру.")
+            if not re.search(r'[!@#$%^&*(),.?":{}|<>/\\]', password):
+                raise forms.ValidationError("Пароль має містити хоча б один спеціальний символ.")
+        return password
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
